@@ -1,5 +1,6 @@
 import mongoose, { mongo } from "mongoose";
 import Workout from "../models/workoutModel.js";
+import { createWorkoutSchema } from "../validations/workoutsValidationSchemas.js";
 
 // GET all workouts
 const getAllWorkouts = async (req, res) => {
@@ -12,6 +13,17 @@ const getAllWorkouts = async (req, res) => {
 
 // Create a new workout
 const createWorkout = async (req, res) => {
+  // Request validation
+  const { error } = createWorkoutSchema.validate(req.body, {
+    abortEarly: false,
+  });
+
+  if (error) {
+    const { details } = error;
+    return res.status(400).json({ error: details });
+  }
+
+  // Business Logic
   const { title, load, reps } = req.body;
   try {
     const workout = await Workout.create({ title, load, reps });
