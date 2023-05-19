@@ -24,21 +24,61 @@ body {
 .navbar {
   height: 70px;
   background-color: white;
+  /* color: brown; */
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  color: brown;
 }
 
 .navbar-container {
   max-width: 1400px;
   margin: 0 50px 0;
   padding-left: 25px;
+  display: grid;
+  grid-template-columns: 1fr 1 fr 1fr;
+  justify-content: center;
+  align-items: center;
 }
 
-/* .navbar h1 {
-  text-align: left;
-} */
+.navbar-logo {
+  color: grey;
+  margin-left: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.navbar-links {
+  margin-right: 150px;
+}
+
+.navbar-link {
+  padding-inline: 25px;
+  color: grey;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  min-height: 25px;
+  padding: 8px;
+  width: 200px;
+  align-self: center;
+  color: grey;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  /* background-color: grey; */
+  cursor: pointer;
+  margin-top: 20px;
+  border: 1px solid rgb(153, 73, 73);
+}
+
+.btn-secondary:hover {
+  background-color: rgb(195, 41, 41);
+  color: white;
+}
 
 .workouts-container {
   display: flex;
@@ -145,4 +185,45 @@ body {
 
 .input-error {
   border: 1px solid red;
+}
+
+.login-form {
+  /* position: relative; */
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  /* border: 1px solid red; */
+  min-width: 400px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px;
+  border-radius: 10px;
+}
+
+.login-container h2 {
+  color: rgb(107, 105, 105);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.login-form input {
+  min-width: 250px;
+  height: 30px;
+  padding: 5px;
+  align-self: center;
+  /* border: none; */
+  /* margin-bottom: 10px; */
+}
+
+.login-form:focus {
+  border-color: orangered;
 }

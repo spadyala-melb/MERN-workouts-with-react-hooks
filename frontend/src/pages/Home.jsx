@@ -3,10 +3,10 @@ import React from "react";
 import axios from "axios";
 import { ImBin } from "react-icons/im";
 import { WorkoutsContext } from "../context/WorkoutsContext";
+// import { UserContext } from "../context/UserContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 const Home = () => {
-  // const [workouts, setWorkouts] = useState([]);
   const [title, setTitle] = useState("");
   const [load, setLoad] = useState("");
   const [reps, setReps] = useState("");
@@ -23,7 +23,6 @@ const Home = () => {
     axios
       .get("http://localhost:4000/api/workouts")
       .then((response) => {
-        // setWorkouts(response.data);
         dispatch({ type: "SET_WORKOUTS", payload: response.data });
       })
       .catch((error) => {
@@ -40,7 +39,6 @@ const Home = () => {
         reps,
       })
       .then((response) => {
-        // console.log("Response:", response.data);
         dispatch({ type: "CREATE_WORKOUT", payload: response.data });
         setTitle("");
         setLoad("");
@@ -56,7 +54,6 @@ const Home = () => {
     axios
       .delete(`http://localhost:4000/api/workouts/${id}`)
       .then((response) => {
-        // console.log("Response:", response.data);
         dispatch({ type: "DELETE_WORKOUT", payload: id });
       })
       .catch((error) => {
