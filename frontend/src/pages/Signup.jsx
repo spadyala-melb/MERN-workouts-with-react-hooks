@@ -1,36 +1,16 @@
 import React, { useState, useContext } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("Unknown Context");
-  }
+  const context = useContext(AuthContext);
+  const { signup, error, isLoading } = context;
 
-  const { user, dispatch } = context;
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:4000/api/user/signup", {
-        email,
-        password,
-      })
-      .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error:", error.response.data.error);
-        setError(error.response.data.error);
-      });
+    await signup(email, password);
   };
 
   return (
@@ -50,7 +30,15 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-          <button className="btn">Signup</button>
+          <button className="btn" disabled={isLoading}>
+            Signup
+          </button>
+          {error &&
+            error.map((err) => (
+              <div className="error" key={err.message}>
+                {err.message}
+              </div>
+            ))}
         </div>
       </form>
     </div>

@@ -17,17 +17,13 @@ const createToken = (_id) => {
 };
 
 const verifyToken = (token) => {
-  const decoded = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    (error, decoded) => {
-      if (error) {
-        console.log("Failed to verify token: ", error.message);
-        return;
-      }
-      return decoded;
-    }
-  );
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    console.log("Failed to verify token:", error.message);
+    return null;
+  }
   return decoded;
 };
 

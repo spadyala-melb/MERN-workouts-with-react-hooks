@@ -1,36 +1,14 @@
-import React, { useState, useContext } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import React, { useState } from "react";
+import { useLogin } from "../hooks/useLogin";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const { login, error, isLoading } = useLogin();
 
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("Unknown Context");
-  }
-
-  const { user, dispatch } = context;
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:4000/api/user/login", {
-        email,
-        password,
-      })
-      .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error:", error.response.data.error);
-        setError(error.response.data.error);
-      });
+    await login(email, password);
   };
 
   return (
@@ -50,7 +28,15 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-          <button className="btn">Login</button>
+          <button className="btn" disabled={isLoading}>
+            Login
+          </button>
+          {error &&
+            error.map((err) => (
+              <div className="error" key={err.message}>
+                {err.message}
+              </div>
+            ))}
         </div>
       </form>
     </div>

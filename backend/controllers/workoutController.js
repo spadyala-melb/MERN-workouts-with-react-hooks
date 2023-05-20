@@ -4,7 +4,8 @@ import { createWorkoutSchema } from "../validations/workoutsValidationSchemas.js
 
 // GET all workouts
 const getAllWorkouts = async (req, res) => {
-  const workouts = await Workout.find({}).sort({ createdAt: -1 });
+  const user_id = req.user._id;
+  const workouts = await Workout.find({ user_id }).sort({ createdAt: -1 });
   if (!workouts) {
     return res.status(400).json({ msg: "No workouts found" });
   }
@@ -25,8 +26,10 @@ const createWorkout = async (req, res) => {
 
   // Business Logic
   const { title, load, reps } = req.body;
+  const user_id = req.user._id;
+  // console.log("request: ", req);
   try {
-    const workout = await Workout.create({ title, load, reps });
+    const workout = await Workout.create({ title, load, reps, user_id });
     res.status(200).json(workout);
   } catch (error) {
     console.log(error);

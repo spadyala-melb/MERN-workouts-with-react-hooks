@@ -1,10 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
 import { ImBin } from "react-icons/im";
-import { WorkoutsContext } from "../context/WorkoutsContext";
-// import { UserContext } from "../context/UserContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Home = () => {
   const [title, setTitle] = useState("");
@@ -12,53 +12,73 @@ const Home = () => {
   const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
 
-  const context = useContext(WorkoutsContext);
-  if (!context) {
-    throw new Error("Unknown Context");
-  }
-
+  const context = useWorkoutsContext();
   const { workouts, dispatch } = context;
 
+  const { user } = useAuthContext();
+
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/workouts")
-      .then((response) => {
-        dispatch({ type: "SET_WORKOUTS", payload: response.data });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [dispatch]);
+    if (user) {
+      axios
+        .get("http://localhost:4000/api/workouts", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          dispatch({ type: "SET_WORKOUTS", payload: response.data });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [dispatch, user]);
 
   const handleAddWorkout = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:4000/api/workouts", {
-        title,
-        load,
-        reps,
-      })
-      .then((response) => {
-        dispatch({ type: "CREATE_WORKOUT", payload: response.data });
-        setTitle("");
-        setLoad("");
-        setReps("");
-      })
-      .catch((error) => {
-        console.error("Error:", error.response.data.error);
-        setError(error.response.data.error);
-      });
+    if (user) {
+      axios
+        .post(
+          "http://localhost:4000/api/workouts",
+          {
+            title,
+            load,
+            reps,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        )
+        .then((response) => {
+          dispatch({ type: "CREATE_WORKOUT", payload: response.data });
+          setTitle("");
+          setLoad("");
+          setReps("");
+        })
+        .catch((error) => {
+          console.error("Error:", error.response.data.error);
+          setError(error.response.data.error);
+        });
+    }
   };
 
   const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:4000/api/workouts/${id}`)
-      .then((response) => {
-        dispatch({ type: "DELETE_WORKOUT", payload: id });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    if (user) {
+      axios
+        .delete(`http://localhost:4000/api/workouts/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          dispatch({ type: "DELETE_WORKOUT", payload: id });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   };
 
   return (
